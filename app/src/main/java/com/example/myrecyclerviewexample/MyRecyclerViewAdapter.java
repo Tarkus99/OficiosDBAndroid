@@ -40,7 +40,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         Usuario u = list.get(position);
         holder.title.setText(u.getApellidos().concat(", ").concat(u.getNombre()));
         holder.subtitle.setText(u.getOficio());
-        switch (u.getImagen()){
+        switch (u.getOficio()){
             case 1 : holder.image.setImageResource(R.mipmap.ic_1_foreground);
             break;
             case 2 : holder.image.setImageResource(R.mipmap.ic_2_foreground);

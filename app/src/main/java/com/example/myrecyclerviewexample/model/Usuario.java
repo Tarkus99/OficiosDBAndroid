@@ -4,9 +4,9 @@ public class Usuario {
     private int imagen;
     private String nombre;
     private String apellidos;
-    private String oficio;
+    private int oficio;
 
-    public Usuario(int imagen, String nombre, String apellidos, String oficio) {
+    public Usuario(int imagen, String nombre, String apellidos, int oficio) {
         this.imagen = imagen;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -25,7 +25,7 @@ public class Usuario {
         return apellidos;
     }
 
-    public String getOficio() {
+    public int getOficio() {
         return oficio;
     }
 }
