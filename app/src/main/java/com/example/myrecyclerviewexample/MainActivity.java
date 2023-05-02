@@ -18,6 +18,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements View.OnClickListener, CallInterface {
 
     private RecyclerView recyclerView;
+    private MyRecyclerViewAdapter myRecyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +26,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         recyclerView = findViewById(R.id.recycler);
 
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(this, Model.getInstance().getUsuarios());
+        myRecyclerViewAdapter = new MyRecyclerViewAdapter(this);
         myRecyclerViewAdapter.setOnClickListener(this);
         recyclerView.setAdapter(myRecyclerViewAdapter);
 
@@ -35,6 +36,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, RecyclerView.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        showProgress();
         executeCall(this);
     }
 
@@ -47,12 +49,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void doInBackground() {
 
-        List<Usuario> usuarioList = Model.getInstance().getUsuarios();
+        Model.getInstance().getUsuarios();
+        Model.getInstance().getOficios();
 
     }
 
     @Override
     public void doInUI() {
-
+        hideProgress();
+        List<Usuario> usuarioList = Model.getInstance().getUsuarios();
+        myRecyclerViewAdapter.setUsuarios(usuarioList);
     }
 }
