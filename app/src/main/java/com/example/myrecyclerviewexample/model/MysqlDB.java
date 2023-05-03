@@ -1,5 +1,7 @@
 package com.example.myrecyclerviewexample.model;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,7 +19,7 @@ public class MysqlDB {
             throw new RuntimeException(e);
         }
 
-        return DriverManager.getConnection("jdbc:mysql://10.13.1.1:3306/java","jalonso","1111");
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/java","gabriel","1234");
     }
 
     public List<Usuario> getAllUsers(){
@@ -25,7 +27,7 @@ public class MysqlDB {
 
         try(Connection connection = getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Usuario")
+            ResultSet rs = stmt.executeQuery("SELECT * FROM USUARIO")
         ){
             int id,oficio;
             String nombre,apellidos;
@@ -33,8 +35,9 @@ public class MysqlDB {
                 id=rs.getInt("idUsuario");
                 nombre = rs.getString("nombre");
                 apellidos= rs.getString("apellidos");
-                oficio = rs.getInt("Oficio_idOficio");
+                oficio = rs.getInt("idOficio");
                 usuarios.add(new Usuario(id,nombre,apellidos,oficio));
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,7 +50,7 @@ public class MysqlDB {
 
         try(Connection c = getConnection();
             Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM Oficio")
+            ResultSet rs = statement.executeQuery("SELECT * FROM OFICIO")
         ){
 
             int idOficio;

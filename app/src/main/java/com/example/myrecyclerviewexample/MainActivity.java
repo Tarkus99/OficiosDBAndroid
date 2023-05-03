@@ -48,10 +48,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void doInBackground() {
-
         Model.getInstance().getUsuarios();
         Model.getInstance().getOficios();
-
     }
 
     @Override
