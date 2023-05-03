@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="oficios">
+        <item>Actor</item>
+        <item>Albañil</item>
+        <item>Banquero</item>
+        <item>Cocinero</item>
+        <item>Estudiante</item>
+        <item>Instagramer</item>
+        <item>Pintor</item>
+        <item>Policía</item>
+        <item>Político activo</item>
+        <item>Político retirado</item>
+        <item>Vendedor</item>
+        <item>Youtuber</item>
+    </string-array>
+</resources>
