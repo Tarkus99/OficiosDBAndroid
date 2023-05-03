@@ -1,20 +1,18 @@
 package com.example.myrecyclerviewexample.model;
 
-public class Usuario {
-    private int imagen;
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
+    private int id;
     private String nombre;
     private String apellidos;
     private int oficio;
 
-    public Usuario(int imagen, String nombre, String apellidos, int oficio) {
-        this.imagen = imagen;
+    public Usuario(int id, String nombre, String apellidos, int oficio) {
+        this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.oficio = oficio;
-    }
-
-    public int getImagen() {
-        return imagen;
     }
 
     public String getNombre() {

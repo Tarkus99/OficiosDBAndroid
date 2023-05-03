@@ -1,6 +1,7 @@
 package com.example.myrecyclerviewexample;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +44,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         List<Oficio> oficios = Model.getInstance().getOficios();
 
         Usuario u = list.get(position);
-        holder.title.setText(u.getApellidos().concat(", ").concat(u.getNombre()));
+        holder.title.setText(u.getApellidos() + ", " + u.getNombre());
         holder.subtitle.setText(
-                oficios.stream()
+                         oficios.stream()
                         .filter(o->o.getIdOficio()==u.getOficio())
                         .findFirst()
                         .get()

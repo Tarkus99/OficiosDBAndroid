@@ -14,7 +14,6 @@ public class Model {
         oficios = new ArrayList<>();
     }
 
-
     public static Model getInstance() {
         if (model == null)
             model = new Model();
@@ -36,5 +35,14 @@ public class Model {
             oficios = mysqlDB.getAllOficios();
         }
         return oficios;
+    }
+
+    public int insertUser(String nombre, String apellidos, int oficio){
+        MysqlDB mysqlDB = new MysqlDB();
+        return mysqlDB.insertUser(nombre, apellidos, oficio);
+    }
+
+    public void addUser(Usuario u){
+        usuarios.add(u);
     }
 }

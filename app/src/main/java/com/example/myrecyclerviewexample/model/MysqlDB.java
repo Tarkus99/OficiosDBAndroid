@@ -2,6 +2,8 @@ package com.example.myrecyclerviewexample.model;
 
 import android.util.Log;
 
+import com.mysql.jdbc.exceptions.MySQLDataException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -66,5 +68,19 @@ public class MysqlDB {
             e.printStackTrace();
         }
         return oficios;
+    }
+
+    public int insertUser(String name, String apellidos, int oficio){
+        String sql =
+                "INSERT INTO USUARIO(nombre, apellidos, idOficio)" +
+                        " VALUES('" + name + "', '" + apellidos + "', "  + oficio +")";
+        try(Connection c = getConnection();
+            Statement st = c.createStatement();
+        ){
+           return st.executeUpdate(sql);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

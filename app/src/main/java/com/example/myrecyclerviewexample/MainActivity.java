@@ -47,10 +47,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (result.getResultCode() == RESULT_CANCELED){
 
                     }else{
+                        String nombre = (String)result.getData().getExtras().getSerializable("nombre");
+                        String apellidos = (String)result.getData().getExtras().getSerializable("apellidos");
+                        int oficio = (int)result.getData().getExtras().getSerializable("oficio");
+                        int idUsuario = Model.getInstance().getUsuarios().size();
+                        Usuario u = new Usuario(idUsuario, nombre, apellidos, oficio);
 
+                        Model.getInstance().addUser(u);
+
+                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getUsuarios());
+                        myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
 
+        addUser.setOnClickListener(view->{
+            Intent intent = new Intent(getApplicationContext(), DetailedView.class);
+            intent.putExtra("mode", DetailedView.MODO.CREATE);
+            someActivityResult.launch(intent);
+        });
         showProgress();
         executeCall(this);
     }
@@ -58,7 +72,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onClick(View view) {
         Usuario u = Model.getInstance().getUsuarios().get(recyclerView.getChildAdapterPosition(view));
-        Toast.makeText(this,"Clic en " + u.getOficio(),Toast.LENGTH_SHORT).show();
+        ActivityResultLauncher<Intent> detailedViewLaunch = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode()==RESULT_OK){
+                        myRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                });
+        Intent intent = new Intent(getApplicationContext(), DetailedView.class);
+        intent.putExtra("mode", DetailedView.MODO.UPDATE);
+        intent.putExtra("user", u);
+        detailedViewLaunch.launch(intent);
     }
 
     @Override
