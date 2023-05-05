@@ -25,7 +25,7 @@ public class DetailedView extends BaseActivity {
     private String oficio;
     private TextInputEditText nombre, apellidos;
 
-    private Button aceptar, cancelar, update;
+    private Button create, cancelar, update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class DetailedView extends BaseActivity {
         setContentView(R.layout.detailed_view);
 
         spinner = findViewById(R.id.spinner);
-        aceptar = findViewById(R.id.aceptar);
+        create = findViewById(R.id.aceptar);
         update = findViewById(R.id.update);
         cancelar = findViewById(R.id.cancelar);
         nombre = findViewById(R.id.txtNombre);
@@ -41,7 +41,7 @@ public class DetailedView extends BaseActivity {
 
         MODO m = (MODO)getIntent().getExtras().getSerializable("mode");
         if (m==MODO.UPDATE){
-            aceptar.setVisibility(View.GONE);
+            create.setVisibility(View.GONE);
             usuario = (Usuario) getIntent().getExtras().getSerializable("user");
             nombre.setText(usuario.getNombre());
             apellidos.setText(usuario.getApellidos());
@@ -70,7 +70,7 @@ public class DetailedView extends BaseActivity {
             finish();
         });
 
-        aceptar.setOnClickListener(view -> {
+        create.setOnClickListener(view -> {
             if (!nombre.getText().toString().matches("") && !apellidos.getText().toString().matches("")){
                 showProgress();
                 executeCall(new CallInterface() {
@@ -98,7 +98,43 @@ public class DetailedView extends BaseActivity {
                         }
                     }
                 });
+            }else{
+                Toast.makeText(this, "Debes rellenar todos los campos.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+        update.setOnClickListener(view->{
+            if (!nombre.getText().toString().matches("") && !apellidos.getText().toString().matches("")){
+                showProgress();
+                executeCall(new CallInterface() {
+                    int result = 0;
+                    @Override
+                    public void doInBackground() {
+                        result = Model.getInstance().updateUser(nombre.getText().toString(),
+                                apellidos.getText().toString(),
+                                spinner.getSelectedItemPosition()+1,
+                                usuario.getId());
+                    }
+                    @Override
+                    public void doInUI() {
+                        hideProgress();
+                        if (result==0){
+                            Toast.makeText(DetailedView.this, "No se ha podido actualizar el usuario.", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(DetailedView.this, "Usuario actualizado correctamente.", Toast.LENGTH_SHORT).show();
+                            //usuario = Model.getInstance().getUsuarios().get(usuario.getId()-1);
+
+                            usuario.setNombre(nombre.getText().toString());
+                            usuario.setApellidos(apellidos.getText().toString());
+                            usuario.setOficio(spinner.getSelectedItemPosition()+1);
+
+                            Toast.makeText(DetailedView.this, usuario.getApellidos(), Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+                });
             }else{
                 Toast.makeText(this, "Debes rellenar todos los campos.", Toast.LENGTH_SHORT).show();
             }

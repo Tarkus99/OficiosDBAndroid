@@ -42,7 +42,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         List<Oficio> oficios = Model.getInstance().getOficios();
-        //holder.oc=onClickListener;
         Usuario u = list.get(position);
         holder.title.setText(u.getApellidos() + ", " + u.getNombre());
         holder.subtitle.setText(
@@ -94,8 +93,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        //View.OnClickListener oc;
         ImageView image;
         TextView title;
         TextView subtitle;
@@ -106,6 +103,5 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             title = itemView.findViewById(R.id.title);
             subtitle = itemView.findViewById(R.id.subtitle);
         }
-
     }
 }

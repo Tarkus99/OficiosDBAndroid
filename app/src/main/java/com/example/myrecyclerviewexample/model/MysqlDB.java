@@ -29,7 +29,7 @@ public class MysqlDB {
 
         try(Connection connection = getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USUARIO")
+            ResultSet rs = stmt.executeQuery("SELECT * FROM USUARIO ORDER BY 3")
         ){
             int id,oficio;
             String nombre,apellidos;
@@ -39,7 +39,6 @@ public class MysqlDB {
                 apellidos= rs.getString("apellidos");
                 oficio = rs.getInt("idOficio");
                 usuarios.add(new Usuario(id,nombre,apellidos,oficio));
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,6 +77,35 @@ public class MysqlDB {
             Statement st = c.createStatement();
         ){
            return st.executeUpdate(sql);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int updateUser(String nombre, String apellidos, int profesion, int idUsuario){
+        String sql = "UPDATE USUARIO SET nombre = '" + nombre + "', apellidos = '" + apellidos
+                + "', idOficio = " + profesion + " WHERE idUsuario = " + idUsuario;
+        Log.d("caca", sql);
+        try(
+                Connection c = getConnection();
+                Statement st = c.createStatement();
+                )
+        {
+            return st.executeUpdate(sql);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int deleteUser(Usuario u){
+        String sql = "DELETE FROM USUARIO WHERE idUsuario = " + u.getId();
+        try (
+                Connection c = getConnection();
+                Statement st = c.createStatement()
+                ){
+            return st.executeUpdate(sql);
         }catch (SQLException e){
             e.printStackTrace();
         }

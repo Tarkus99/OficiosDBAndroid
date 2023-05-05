@@ -42,6 +42,17 @@ public class Model {
         return mysqlDB.insertUser(nombre, apellidos, oficio);
     }
 
+    public int updateUser(String nombre, String apellidos, int oficio, int idUsuario){
+        MysqlDB mysqlDB = new MysqlDB();
+
+        return mysqlDB.updateUser(nombre, apellidos, oficio, idUsuario);
+    }
+
+    public int deleteUser(Usuario u){
+        MysqlDB mysqlDB = new MysqlDB();
+        return mysqlDB.deleteUser(u);
+    }
+
     public void addUser(Usuario u){
         usuarios.add(u);
     }
