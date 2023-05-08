@@ -30,6 +30,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private RecyclerView recyclerView;
     private MyRecyclerViewAdapter myRecyclerViewAdapter;
     private FloatingActionButton addUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,74 +60,61 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 Usuario u = Model.getInstance().getUsuarios().get(viewHolder.getAdapterPosition());
-                showProgress();
+
                 executeCall(new CallInterface() {
-                    int result = 0;
                     @Override
                     public void doInBackground() {
-                        result = Model.getInstance().deleteUser(u);
+                        Model.getInstance().deleteUser(u);
                     }
 
                     @Override
                     public void doInUI() {
-                        hideProgress();
-                        if (result==0) {
-                            Toast.makeText(MainActivity.this, "Error al borra el usuario.", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Model.getInstance().getUsuarios().remove(position);
-                        }
+                        myRecyclerViewAdapter.notifyItemRemoved(position);
+
+                        Snackbar.make(recyclerView, "Deleted " + u.getNombre(), Snackbar.LENGTH_LONG)
+                                .setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        executeCall(new CallInterface() {
+                                            boolean result = false;
+
+                                            @Override
+                                            public void doInBackground() {
+                                                result = Model.getInstance().insertUserWithId(u);
+                                            }
+
+                                            @Override
+                                            public void doInUI() {
+                                                if (result) {
+                                                    Toast.makeText(MainActivity.this, "Operación cancelada", Toast.LENGTH_SHORT).show();
+                                                    myRecyclerViewAdapter.notifyItemInserted(position);
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .show();
                     }
                 });
-                myRecyclerViewAdapter.notifyItemRemoved(position);
-
-                Snackbar.make(recyclerView, "Deleted " + u.getNombre(), Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                executeCall(new CallInterface() {
-                                    @Override
-                                    public void doInBackground() {
-                                        Model.getInstance().insertUser(u.getNombre(), u.getApellidos(), u.getOficio());
-                                    }
-
-                                    @Override
-                                    public void doInUI() {
-                                        Model.getInstance().getUsuarios().add(position, u);
-                                        myRecyclerViewAdapter.notifyItemInserted(position);
-                                    }
-                                });
-                            }
-                        })
-                        .show();
             }
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
 
-
-
-
-         someActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK){
-                        String nombre = (String)result.getData().getExtras().getSerializable("nombre");
-                        String apellidos = (String)result.getData().getExtras().getSerializable("apellidos");
-                        int oficio = (int)result.getData().getExtras().getSerializable("oficio");
-                        int idUsuario = Model.getInstance().getUsuarios().size();
-                        Usuario u = new Usuario(idUsuario, nombre, apellidos, oficio);
-
-                        Model.getInstance().addUser(u);
-                        Model.getInstance().getUsuarios().sort(Usuario::compareTo);
-
+        someActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result ->
+                {
+                    if (result.getResultCode() == RESULT_OK) {
                         myRecyclerViewAdapter.setUsuarios(Model.getInstance().getUsuarios());
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
 
         detailActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK){
+                result ->
+                {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
                         Model.getInstance().getUsuarios().sort(Usuario::compareTo);
                         myRecyclerViewAdapter.setUsuarios(Model.getInstance().getUsuarios());
                         myRecyclerViewAdapter.notifyDataSetChanged();
@@ -134,11 +122,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
         );
 
-        addUser.setOnClickListener(view->{
+        addUser.setOnClickListener(view ->
+        {
             Intent intent = new Intent(getApplicationContext(), DetailedView.class);
             intent.putExtra("mode", DetailedView.MODO.CREATE);
             someActivityResult.launch(intent);
         });
+
         showProgress();
         executeCall(this);
     }

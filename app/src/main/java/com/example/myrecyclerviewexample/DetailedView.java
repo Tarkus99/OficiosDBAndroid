@@ -74,25 +74,22 @@ public class DetailedView extends BaseActivity {
             if (!nombre.getText().toString().matches("") && !apellidos.getText().toString().matches("")){
                 showProgress();
                 executeCall(new CallInterface() {
-                    int result = 0;
+                    boolean result = false;
                     @Override
                     public void doInBackground() {
                        result = Model.getInstance().insertUser(
-                                nombre.getText().toString(),
+                               new Usuario(nombre.getText().toString(),
                                 apellidos.getText().toString(),
-                                spinner.getSelectedItemPosition()+1);
+                                spinner.getSelectedItemPosition()+1));
                     }
                     @Override
                     public void doInUI() {
                         hideProgress();
-                        if (result==0){
+                        if (!result){
                             Toast.makeText(DetailedView.this, "No se ha podido insertar el usuario.", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(DetailedView.this, "Usuario insertado correctamente.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            intent.putExtra("nombre", nombre.getText().toString());
-                            intent.putExtra("apellidos", apellidos.getText().toString());
-                            intent.putExtra("oficio", spinner.getSelectedItemPosition()+1);
                             setResult(RESULT_OK,intent);
                             finish();
                         }

@@ -14,6 +14,11 @@ public class Usuario implements Serializable, Comparable<Usuario> {
         this.apellidos = apellidos;
         this.oficio = oficio;
     }
+    public Usuario(String nombre, String apellidos, int oficio) {
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.oficio = oficio;
+    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -25,6 +30,10 @@ public class Usuario implements Serializable, Comparable<Usuario> {
 
     public void setOficio(int oficio) {
         this.oficio = oficio;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {

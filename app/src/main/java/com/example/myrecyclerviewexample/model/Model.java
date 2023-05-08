@@ -37,13 +37,30 @@ public class Model {
         return oficios;
     }
 
-    public int insertUser(String nombre, String apellidos, int oficio){
+    public boolean insertUser(Usuario u){
         MysqlDB mysqlDB = new MysqlDB();
-        return mysqlDB.insertUser(nombre, apellidos, oficio);
+        Usuario aux  = mysqlDB.insertUser(u);
+        if (aux!=null) {
+            usuarios.add(aux);
+            usuarios.sort(Usuario::compareTo);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean insertUserWithId(Usuario u){
+        MysqlDB mysqlDB = new MysqlDB();
+        Usuario aux = mysqlDB.insertUserWithId(u);
+        if (aux!=null) {
+            usuarios.add(aux);
+            usuarios.sort(Usuario::compareTo);
+            return true;
+        }
+        return false;
     }
 
     public int updateUser(Usuario u){
-        int result = 0;
+        int result;
         Usuario aux;
         MysqlDB mysqlDB = new MysqlDB();
         result = mysqlDB.updateUser(u);
@@ -58,9 +75,13 @@ public class Model {
         }
     }
 
-    public int deleteUser(Usuario u){
+    public void deleteUser(Usuario u){
+        boolean result;
         MysqlDB mysqlDB = new MysqlDB();
-        return mysqlDB.deleteUser(u);
+        result = mysqlDB.deleteUser(u);
+        if (result){
+            usuarios.remove(u);
+        }
     }
 
     public void addUser(Usuario u){
