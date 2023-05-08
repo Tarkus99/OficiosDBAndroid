@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,7 +23,7 @@ public class DetailedView extends BaseActivity {
     }
     private Usuario usuario;
     private Spinner spinner;
-    private String oficio;
+    private ImageView imageView;
     private TextInputEditText nombre, apellidos;
 
     private Button create, cancelar, update;
@@ -38,6 +39,7 @@ public class DetailedView extends BaseActivity {
         cancelar = findViewById(R.id.cancelar);
         nombre = findViewById(R.id.txtNombre);
         apellidos = findViewById(R.id.txtApellidos);
+        imageView = findViewById(R.id.imageView);
 
         MODO m = (MODO)getIntent().getExtras().getSerializable("mode");
         if (m==MODO.UPDATE){
@@ -56,9 +58,45 @@ public class DetailedView extends BaseActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                oficio = (String) spinner.getItemAtPosition(i);
+                switch (i) {
+                    case 0:
+                        imageView.setImageResource(R.mipmap.ic_1_foreground);
+                        break;
+                    case 1:
+                        imageView.setImageResource(R.mipmap.ic_2_foreground);
+                        break;
+                    case 2:
+                        imageView.setImageResource(R.mipmap.ic_3_foreground);
+                        break;
+                    case 3:
+                        imageView.setImageResource(R.mipmap.ic_4_foreground);
+                        break;
+                    case 4:
+                        imageView.setImageResource(R.mipmap.ic_5_foreground);
+                        break;
+                    case 5:
+                        imageView.setImageResource(R.mipmap.ic_6_foreground);
+                        break;
+                    case 6:
+                        imageView.setImageResource(R.mipmap.ic_7_foreground);
+                        break;
+                    case 7:
+                        imageView.setImageResource(R.mipmap.ic_8_foreground);
+                        break;
+                    case 8:
+                        imageView.setImageResource(R.mipmap.ic_9_foreground);
+                        break;
+                    case 9:
+                        imageView.setImageResource(R.mipmap.ic_10_foreground);
+                        break;
+                    case 10:
+                        imageView.setImageResource(R.mipmap.ic_11_foreground);
+                        break;
+                    case 11:
+                        imageView.setImageResource(R.mipmap.ic_12_foreground);
+                        break;
+                }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -120,7 +158,6 @@ public class DetailedView extends BaseActivity {
                             Toast.makeText(DetailedView.this, "No se ha podido actualizar el usuario.", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(DetailedView.this, "Usuario actualizado correctamente.", Toast.LENGTH_SHORT).show();
-                            //usuario = Model.getInstance().getUsuarios().get(usuario.getId()-1);
 
                             usuario.setNombre(nombre.getText().toString());
                             usuario.setApellidos(apellidos.getText().toString());

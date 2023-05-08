@@ -82,14 +82,13 @@ public class MysqlDB {
             pst.setString(++pos, u.getApellidos());
             pst.setInt(++pos, u.getOficio());
 
-            if (pst.executeUpdate() == 0) {
+            if (pst.executeUpdate() == 0)
                 throw new SQLException("No se ha podido insertar el usuario.");
-            } else {
-                try (ResultSet rs = pst.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        u.setId(rs.getInt(1));
-                        return u;
-                    }
+
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    u.setId(rs.getInt(1));
+                    return u;
                 }
             }
         } catch (SQLException e) {
@@ -110,11 +109,9 @@ public class MysqlDB {
             pst.setString(++pos, u.getApellidos());
             pst.setInt(++pos, u.getOficio());
 
-            if (pst.executeUpdate() == 0) {
+            if (pst.executeUpdate() == 0)
                 throw new SQLException("No se ha podido insertar el usuario.");
-            } else {
-                return u;
-            }
+            return u;
         }catch(SQLException e){
             e.printStackTrace();
         }

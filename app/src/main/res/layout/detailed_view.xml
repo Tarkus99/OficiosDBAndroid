@@ -44,13 +44,11 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="197dp"
+        android:layout_height="54dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:minHeight="64dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/apellido" />
 
@@ -83,4 +81,14 @@
         android:text="ACTUALIZAR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="82dp"
+        android:layout_height="71dp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spinner"
+        app:layout_constraintTop_toTopOf="@+id/spinner"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
 </androidx.constraintlayout.widget.ConstraintLayout>
