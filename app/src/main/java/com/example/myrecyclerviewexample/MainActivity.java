@@ -83,7 +83,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         .setAction("Undo", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                showProgress();
                                 executeCall(new CallInterface() {
                                     @Override
                                     public void doInBackground() {
@@ -92,7 +91,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                                     @Override
                                     public void doInUI() {
-                                        hideProgress();
                                         Model.getInstance().getUsuarios().add(position, u);
                                         myRecyclerViewAdapter.notifyItemInserted(position);
                                     }

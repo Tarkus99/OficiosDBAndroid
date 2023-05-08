@@ -110,10 +110,11 @@ public class DetailedView extends BaseActivity {
                     int result = 0;
                     @Override
                     public void doInBackground() {
-                        result = Model.getInstance().updateUser(nombre.getText().toString(),
-                                apellidos.getText().toString(),
-                                spinner.getSelectedItemPosition()+1,
-                                usuario.getId());
+                        result = Model.getInstance().updateUser(
+                                new Usuario(usuario.getId(),
+                                        nombre.getText().toString(),
+                                        apellidos.getText().toString(),
+                                        spinner.getSelectedItemPosition()+1));
                     }
                     @Override
                     public void doInUI() {

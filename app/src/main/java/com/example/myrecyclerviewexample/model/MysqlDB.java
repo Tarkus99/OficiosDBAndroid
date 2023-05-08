@@ -83,10 +83,9 @@ public class MysqlDB {
         return 0;
     }
 
-    public int updateUser(String nombre, String apellidos, int profesion, int idUsuario){
-        String sql = "UPDATE USUARIO SET nombre = '" + nombre + "', apellidos = '" + apellidos
-                + "', idOficio = " + profesion + " WHERE idUsuario = " + idUsuario;
-        Log.d("caca", sql);
+    public int updateUser(Usuario u){
+        String sql = "UPDATE USUARIO SET nombre = '" + u.getNombre() + "', apellidos = '" + u.getApellidos()
+                + "', idOficio = " + u.getOficio() + " WHERE idUsuario = " + u.getId();
         try(
                 Connection c = getConnection();
                 Statement st = c.createStatement();

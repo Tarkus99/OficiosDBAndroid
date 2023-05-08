@@ -42,10 +42,20 @@ public class Model {
         return mysqlDB.insertUser(nombre, apellidos, oficio);
     }
 
-    public int updateUser(String nombre, String apellidos, int oficio, int idUsuario){
+    public int updateUser(Usuario u){
+        int result = 0;
+        Usuario aux;
         MysqlDB mysqlDB = new MysqlDB();
-
-        return mysqlDB.updateUser(nombre, apellidos, oficio, idUsuario);
+        result = mysqlDB.updateUser(u);
+        if(result != 0){
+            aux = usuarios.get(usuarios.indexOf(u));
+            aux.setNombre(u.getNombre());
+            aux.setApellidos(u.getApellidos());
+            aux.setOficio(u.getOficio());
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     public int deleteUser(Usuario u){

@@ -47,4 +47,13 @@ public class Usuario implements Serializable, Comparable<Usuario> {
     public int compareTo(Usuario u) {
         return apellidos.compareTo(u.getApellidos());
     }
+    @Override
+    public boolean equals(Object o){
+        Usuario aux;
+        if (o instanceof Usuario){
+            aux = (Usuario) o;
+            return this.getId()==aux.getId();
+        }
+        return false;
+    }
 }
