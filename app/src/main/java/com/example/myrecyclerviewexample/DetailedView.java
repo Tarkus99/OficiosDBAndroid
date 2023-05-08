@@ -47,6 +47,7 @@ public class DetailedView extends BaseActivity {
             usuario = (Usuario) getIntent().getExtras().getSerializable("user");
             nombre.setText(usuario.getNombre());
             apellidos.setText(usuario.getApellidos());
+            spinner.setSelection(usuario.getOficio()-1);
         }else{
             update.setVisibility(View.GONE);
         }
