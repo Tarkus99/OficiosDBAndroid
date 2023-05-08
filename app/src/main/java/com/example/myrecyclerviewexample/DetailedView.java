@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.myrecyclerviewexample.base.BaseActivity;
 import com.example.myrecyclerviewexample.base.CallInterface;
 import com.example.myrecyclerviewexample.model.Model;
+import com.example.myrecyclerviewexample.model.Oficio;
 import com.example.myrecyclerviewexample.model.Usuario;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -41,6 +42,9 @@ public class DetailedView extends BaseActivity {
         apellidos = findViewById(R.id.txtApellidos);
         imageView = findViewById(R.id.imageView);
 
+        ArrayAdapter<Oficio> myAdapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_item, Model.getInstance().getOficios());
+        spinner.setAdapter(myAdapter);
+
         MODO m = (MODO)getIntent().getExtras().getSerializable("mode");
         if (m==MODO.UPDATE){
             create.setVisibility(View.GONE);
@@ -51,10 +55,6 @@ public class DetailedView extends BaseActivity {
         }else{
             update.setVisibility(View.GONE);
         }
-
-        ArrayAdapter<CharSequence> myAdapter =
-                ArrayAdapter.createFromResource(this, R.array.oficios, android.R.layout.simple_spinner_item);
-        spinner.setAdapter(myAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

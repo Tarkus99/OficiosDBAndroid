@@ -23,4 +23,18 @@ public class Oficio {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+    @Override
+    public boolean equals (Object o){
+        Oficio aux;
+        if (o instanceof Oficio){
+            aux = (Oficio) o;
+            return this.idOficio==aux.getIdOficio();
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return descripcion;
+    }
 }
