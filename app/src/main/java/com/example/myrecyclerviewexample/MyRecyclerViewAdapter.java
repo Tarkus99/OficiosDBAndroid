@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myrecyclerviewexample.API.Connector;
 import com.example.myrecyclerviewexample.base.CallInterface;
+import com.example.myrecyclerviewexample.model.ImagenRecibida;
 import com.example.myrecyclerviewexample.model.Model;
 import com.example.myrecyclerviewexample.model.Oficio;
 import com.example.myrecyclerviewexample.model.Empleado;
@@ -55,53 +56,28 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         List<Oficio> listaOficios = Model.getInstance().getOficios();
 
         Empleado u = listaEmpleados.get(position);
+        Log.d("bla", u.getIdOficio()+"");
         holder.title.setText(u.getApellidos() + ", " + u.getNombre());
 
         int posicionDelOficio = listaOficios.indexOf(new Oficio(u.getIdOficio(), ""));
         Oficio oficioEmpleado = listaOficios.get(posicionDelOficio);
         holder.subtitle.setText(oficioEmpleado.getDescripcion());
+            executeCall(new CallInterface() {
+                ImagenRecibida imagen;
+                byte[] miArray;
 
-//        executeCall(new CallInterface() {
-//            String strFromApi;
-//            byte[] miArray;
-//            @Override
-//            public void doInBackground() {
-//                strFromApi = Connector.getConector().get(String.class, "oficios/images/"+oficioEmpleado.getIdOficio());
-//            }
-//            @Override
-//            public void doInUI() {
-//                miArray = strFromApi.getBytes(StandardCharsets.ISO_8859_1);
-//                Bitmap btmp = BitmapFactory.decodeByteArray(miArray, 0, miArray.length);
-//                holder.image.setImageBitmap(btmp);
-//            }
-//        });
-
-//        switch (u.getOficio()){
-//            case 1 : holder.image.setImageResource(R.mipmap.ic_1_foreground);
-//            break;
-//            case 2 : holder.image.setImageResource(R.mipmap.ic_2_foreground);
-//                break;
-//            case 3 : holder.image.setImageResource(R.mipmap.ic_3_foreground);
-//                break;
-//            case 4 : holder.image.setImageResource(R.mipmap.ic_4_foreground);
-//                break;
-//            case 5 : holder.image.setImageResource(R.mipmap.ic_5_foreground);
-//                break;
-//            case 6 : holder.image.setImageResource(R.mipmap.ic_6_foreground);
-//                break;
-//            case 7 : holder.image.setImageResource(R.mipmap.ic_7_foreground);
-//                break;
-//            case 8 : holder.image.setImageResource(R.mipmap.ic_8_foreground);
-//                break;
-//            case 9 : holder.image.setImageResource(R.mipmap.ic_9_foreground);
-//                break;
-//            case 10 : holder.image.setImageResource(R.mipmap.ic_10_foreground);
-//                break;
-//            case 11 : holder.image.setImageResource(R.mipmap.ic_11_foreground);
-//                break;
-//            case 12 : holder.image.setImageResource(R.mipmap.ic_12_foreground);
-//                break;
-//        }
+                @Override
+                public void doInBackground() {
+                    imagen = Connector.getConector().get(ImagenRecibida.class, "oficios/images/" + u.getIdOficio());
+                }
+                @Override
+                public void doInUI() {
+                    String str = imagen.getImage();
+                    miArray = str.getBytes(StandardCharsets.ISO_8859_1);
+                    Bitmap btmp = BitmapFactory.decodeByteArray(miArray, 0, miArray.length);
+                    holder.image.setImageBitmap(btmp);
+                }
+            });
     }
 
     @Override

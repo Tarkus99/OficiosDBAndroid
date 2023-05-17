@@ -30,7 +30,6 @@ public class Connector{
 
     public <T> List<T> getAsList(Class<T> clazz, String path){
         String url = Parameters.API + path;
-        Log.d("caca", url);
         String jsonResponse = callMethodsObject.get(url);
         if(jsonResponse != null)
             return conversor.fromJsonList(jsonResponse, clazz);
@@ -40,6 +39,7 @@ public class Connector{
 
     public <T> T get(Class<T> clazz, String path){
         String url = Parameters.API + path;
+        Log.d("url", url);
         String jsonResponse = callMethodsObject.get(url);
         if(jsonResponse != null)
             return conversor.fromJson(jsonResponse, clazz);
