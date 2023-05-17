@@ -14,7 +14,7 @@ import com.example.myrecyclerviewexample.base.BaseActivity;
 import com.example.myrecyclerviewexample.base.CallInterface;
 import com.example.myrecyclerviewexample.model.Model;
 import com.example.myrecyclerviewexample.model.Oficio;
-import com.example.myrecyclerviewexample.model.Usuario;
+import com.example.myrecyclerviewexample.model.Empleado;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class DetailedView extends BaseActivity {
@@ -22,7 +22,7 @@ public class DetailedView extends BaseActivity {
     public static enum MODO{
         UPDATE, CREATE;
     }
-    private Usuario usuario;
+    private Empleado empleado;
     private Spinner spinner;
     private ImageView imageView;
     private TextInputEditText nombre, apellidos;
@@ -48,10 +48,10 @@ public class DetailedView extends BaseActivity {
         MODO m = (MODO)getIntent().getExtras().getSerializable("mode");
         if (m==MODO.UPDATE){
             create.setVisibility(View.GONE);
-            usuario = (Usuario) getIntent().getExtras().getSerializable("user");
-            nombre.setText(usuario.getNombre());
-            apellidos.setText(usuario.getApellidos());
-            spinner.setSelection(usuario.getOficio()-1);
+            empleado = (Empleado) getIntent().getExtras().getSerializable("user");
+            nombre.setText(empleado.getNombre());
+            apellidos.setText(empleado.getApellidos());
+            spinner.setSelection(empleado.getIdOficio()-1);
         }else{
             update.setVisibility(View.GONE);
         }
@@ -117,7 +117,7 @@ public class DetailedView extends BaseActivity {
                     @Override
                     public void doInBackground() {
                        result = Model.getInstance().insertUser(
-                               new Usuario(nombre.getText().toString(),
+                               new Empleado(nombre.getText().toString(),
                                 apellidos.getText().toString(),
                                 spinner.getSelectedItemPosition()+1));
                     }
@@ -147,7 +147,7 @@ public class DetailedView extends BaseActivity {
                     @Override
                     public void doInBackground() {
                         result = Model.getInstance().updateUser(
-                                new Usuario(usuario.getId(),
+                                new Empleado(empleado.getIdEmpleado(),
                                         nombre.getText().toString(),
                                         apellidos.getText().toString(),
                                         spinner.getSelectedItemPosition()+1));
@@ -160,11 +160,11 @@ public class DetailedView extends BaseActivity {
                         }else{
                             Toast.makeText(DetailedView.this, "Usuario actualizado correctamente.", Toast.LENGTH_SHORT).show();
 
-                            usuario.setNombre(nombre.getText().toString());
-                            usuario.setApellidos(apellidos.getText().toString());
-                            usuario.setOficio(spinner.getSelectedItemPosition()+1);
+                            empleado.setNombre(nombre.getText().toString());
+                            empleado.setApellidos(apellidos.getText().toString());
+                            empleado.setIdOficio(spinner.getSelectedItemPosition()+1);
 
-                            Toast.makeText(DetailedView.this, usuario.getApellidos(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(DetailedView.this, empleado.getApellidos(), Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             setResult(RESULT_OK, intent);
                             finish();

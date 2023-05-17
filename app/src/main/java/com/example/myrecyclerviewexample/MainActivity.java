@@ -11,14 +11,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.myrecyclerviewexample.base.BaseActivity;
 import com.example.myrecyclerviewexample.base.CallInterface;
 import com.example.myrecyclerviewexample.model.Model;
-import com.example.myrecyclerviewexample.model.Usuario;
+import com.example.myrecyclerviewexample.model.Empleado;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -59,7 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                Usuario u = Model.getInstance().getUsuarios().get(viewHolder.getAdapterPosition());
+                Empleado u = Model.getInstance().getEmpleados().get(viewHolder.getAdapterPosition());
 
                 executeCall(new CallInterface() {
                     @Override
@@ -106,7 +105,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 result ->
                 {
                     if (result.getResultCode() == RESULT_OK) {
-                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getUsuarios());
+                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados());
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
@@ -115,8 +114,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 result ->
                 {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        Model.getInstance().getUsuarios().sort(Usuario::compareTo);
-                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getUsuarios());
+                        Model.getInstance().getEmpleados().sort(Empleado::compareTo);
+                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados());
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
@@ -135,7 +134,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onClick(View view) {
-        Usuario u = Model.getInstance().getUsuarios().get(recyclerView.getChildAdapterPosition(view));
+        Empleado u = Model.getInstance().getEmpleados().get(recyclerView.getChildAdapterPosition(view));
 
         Intent intent = new Intent(getApplicationContext(), DetailedView.class);
         intent.putExtra("mode", DetailedView.MODO.UPDATE);
@@ -145,14 +144,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void doInBackground() {
-        Model.getInstance().getUsuarios();
+        Model.getInstance().getEmpleados();
         Model.getInstance().getOficios();
     }
 
     @Override
     public void doInUI() {
         hideProgress();
-        List<Usuario> usuarioList = Model.getInstance().getUsuarios();
-        myRecyclerViewAdapter.setUsuarios(usuarioList);
+        List<Empleado> empleadoList = Model.getInstance().getEmpleados();
+        myRecyclerViewAdapter.setUsuarios(empleadoList);
     }
 }

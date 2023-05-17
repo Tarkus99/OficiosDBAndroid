@@ -1,9 +1,5 @@
 package com.example.myrecyclerviewexample.model;
 
-import android.util.Log;
-
-import com.mysql.jdbc.exceptions.MySQLDataException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,8 +21,8 @@ public class MysqlDB {
         return DriverManager.getConnection("jdbc:mysql://10.13.0.4:3306/java", "gabriel", "1234");
     }
 
-    public List<Usuario> getAllUsers() {
-        List<Usuario> usuarios = new ArrayList<>();
+    public List<Empleado> getAllUsers() {
+        List<Empleado> empleados = new ArrayList<>();
 
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
@@ -39,12 +35,12 @@ public class MysqlDB {
                 nombre = rs.getString("nombre");
                 apellidos = rs.getString("apellidos");
                 oficio = rs.getInt("idOficio");
-                usuarios.add(new Usuario(id, nombre, apellidos, oficio));
+                empleados.add(new Empleado(id, nombre, apellidos, oficio));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return usuarios;
+        return empleados;
     }
 
     public List<Oficio> getAllOficios() {
@@ -70,7 +66,7 @@ public class MysqlDB {
         return oficios;
     }
 
-    public Usuario insertUser(Usuario u) {
+    public Empleado insertUser(Empleado u) {
         String sql =
                 "INSERT INTO USUARIO(nombre, apellidos, idOficio)" +
                         " VALUES(?,?,?)";
@@ -80,14 +76,14 @@ public class MysqlDB {
             int pos = 0;
             pst.setString(++pos, u.getNombre());
             pst.setString(++pos, u.getApellidos());
-            pst.setInt(++pos, u.getOficio());
+            pst.setInt(++pos, u.getIdOficio());
 
             if (pst.executeUpdate() == 0)
                 throw new SQLException("No se ha podido insertar el usuario.");
 
             try (ResultSet rs = pst.getGeneratedKeys()) {
                 if (rs.next()) {
-                    u.setId(rs.getInt(1));
+                    u.setIdEmpleado(rs.getInt(1));
                     return u;
                 }
             }
@@ -97,17 +93,17 @@ public class MysqlDB {
         return null;
     }
 
-    public Usuario insertUserWithId(Usuario u) {
+    public Empleado insertUserWithId(Empleado u) {
         String sql =
                 "INSERT INTO USUARIO VALUES(?,?,?,?)";
         try (Connection c = getConnection();
              PreparedStatement pst = c.prepareStatement(sql);
         ) {
             int pos = 0;
-            pst.setInt(++pos, u.getId());
+            pst.setInt(++pos, u.getIdEmpleado());
             pst.setString(++pos, u.getNombre());
             pst.setString(++pos, u.getApellidos());
-            pst.setInt(++pos, u.getOficio());
+            pst.setInt(++pos, u.getIdOficio());
 
             if (pst.executeUpdate() == 0)
                 throw new SQLException("No se ha podido insertar el usuario.");
@@ -118,9 +114,9 @@ public class MysqlDB {
         return null;
     }
 
-    public int updateUser(Usuario u) {
+    public int updateUser(Empleado u) {
         String sql = "UPDATE USUARIO SET nombre = '" + u.getNombre() + "', apellidos = '" + u.getApellidos()
-                + "', idOficio = " + u.getOficio() + " WHERE idUsuario = " + u.getId();
+                + "', idOficio = " + u.getIdOficio() + " WHERE idUsuario = " + u.getIdEmpleado();
         try (
                 Connection c = getConnection();
                 Statement st = c.createStatement();
@@ -132,14 +128,14 @@ public class MysqlDB {
         return 0;
     }
 
-    public boolean deleteUser(Usuario u) {
+    public boolean deleteUser(Empleado u) {
         String sql = "DELETE FROM USUARIO WHERE idUsuario = ?";
         try (
                 Connection c = getConnection();
                 PreparedStatement pst = c.prepareStatement(sql);
         ) {
             int pos = 0;
-            pst.setInt(++pos, u.getId());
+            pst.setInt(++pos, u.getIdEmpleado());
             return pst.executeUpdate() != 0;
         } catch (SQLException e) {
             e.printStackTrace();
