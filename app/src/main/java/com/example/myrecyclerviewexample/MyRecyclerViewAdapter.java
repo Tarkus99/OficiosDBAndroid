@@ -56,7 +56,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         List<Oficio> listaOficios = Model.getInstance().getOficios();
 
         Empleado u = listaEmpleados.get(position);
-        Log.d("bla", u.getIdOficio()+"");
         holder.title.setText(u.getApellidos() + ", " + u.getNombre());
 
         int posicionDelOficio = listaOficios.indexOf(new Oficio(u.getIdOficio(), ""));
@@ -113,9 +112,5 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                 callInterface.doInUI();
             });
         });
-    }
-    public byte[] getByteFromString(String apiGet){
-        byte[] miArray = apiGet.getBytes(StandardCharsets.ISO_8859_1);
-        return miArray;
     }
 }

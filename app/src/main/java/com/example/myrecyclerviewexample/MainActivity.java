@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.example.myrecyclerviewexample.model.Empleado;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, CallInterface {
@@ -58,41 +61,43 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                Empleado u = Model.getInstance().getEmpleados().get(viewHolder.getAdapterPosition());
-
+                Empleado u = Model.getInstance().getEmpleados().get(position);
                 executeCall(new CallInterface() {
+                    Empleado e = null;
                     @Override
                     public void doInBackground() {
-                        Model.getInstance().deleteUser(u);
+                        //Model.getInstance().deleteUser(u);
+                         e = connector.delete(Empleado.class, "usuarios/"+u.getIdEmpleado());
                     }
 
                     @Override
                     public void doInUI() {
-                        myRecyclerViewAdapter.notifyItemRemoved(position);
-
-                        Snackbar.make(recyclerView, "Deleted " + u.getNombre(), Snackbar.LENGTH_LONG)
-                                .setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        executeCall(new CallInterface() {
-                                            boolean result = false;
-
-                                            @Override
-                                            public void doInBackground() {
-                                                result = Model.getInstance().insertUserWithId(u);
-                                            }
-
-                                            @Override
-                                            public void doInUI() {
-                                                if (result) {
-                                                    Toast.makeText(MainActivity.this, "Operación cancelada", Toast.LENGTH_SHORT).show();
-                                                    myRecyclerViewAdapter.notifyItemInserted(position);
+                        if (e != null) {
+                            myRecyclerViewAdapter.notifyItemRemoved(position);
+                            Model.getInstance().getEmpleados().remove(u);
+                            Snackbar.make(recyclerView, "Deleted " + u.getNombre(), Snackbar.LENGTH_LONG)
+                                    .setAction("Undo", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            executeCall(new CallInterface() {
+                                                @Override
+                                                public void doInBackground() {
+                                                    e = connector.post(Empleado.class, u,"usuarios");
                                                 }
-                                            }
-                                        });
-                                    }
-                                })
-                                .show();
+
+                                                @Override
+                                                public void doInUI() {
+                                                    if (e!=null) {
+                                                        Model.getInstance().addUser(u);
+                                                        Toast.makeText(MainActivity.this, "Operación cancelada", Toast.LENGTH_SHORT).show();
+                                                        myRecyclerViewAdapter.notifyItemInserted(position);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .show();
+                        }
                     }
                 });
             }
@@ -152,6 +157,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void doInUI() {
         hideProgress();
         List<Empleado> empleadoList = Model.getInstance().getEmpleados();
+        Log.d("caca", empleadoList.get(1).getNombre());
         myRecyclerViewAdapter.setUsuarios(empleadoList);
     }
 }

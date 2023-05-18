@@ -27,6 +27,7 @@ public class Model {
     public List<Empleado> getEmpleados(){
         if (empleados.isEmpty()){
             empleados = Connector.getConector().getAsList(Empleado.class, "usuarios");
+            empleados.sort(Empleado::compareTo);
         }
         return empleados;
     }
@@ -87,5 +88,6 @@ public class Model {
 
     public void addUser(Empleado u){
         empleados.add(u);
+        empleados.sort(Empleado::compareTo);
     }
 }
