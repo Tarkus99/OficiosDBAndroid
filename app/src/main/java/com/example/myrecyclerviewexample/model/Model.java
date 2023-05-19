@@ -23,6 +23,10 @@ public class Model {
 
         return model;
     }
+    public void addUser(Empleado u){
+        empleados.add(u);
+        empleados.sort(Empleado::compareTo);
+    }
 
     public List<Empleado> getEmpleados(){
         if (empleados.isEmpty()){
@@ -39,55 +43,37 @@ public class Model {
         return oficios;
     }
 
-    public boolean insertUser(Empleado u){
-        MysqlDB mysqlDB = new MysqlDB();
-        Empleado aux  = mysqlDB.insertUser(u);
-        if (aux!=null) {
-            empleados.add(aux);
+    public boolean updateUser(Empleado u){
+        Empleado e;
+        e = Connector.getConector().put(Empleado.class, u, "usuarios");
+        if(e!=null){
+            e = empleados.get(empleados.indexOf(u));
+            e.setNombre(u.getNombre());
+            e.setApellidos(u.getApellidos());
+            e.setIdOficio(u.getIdOficio());
             empleados.sort(Empleado::compareTo);
             return true;
-        }
-        return false;
-    }
-
-    public boolean insertUserWithId(Empleado u){
-        MysqlDB mysqlDB = new MysqlDB();
-        Empleado aux = mysqlDB.insertUserWithId(u);
-        if (aux!=null) {
-            empleados.add(aux);
-            empleados.sort(Empleado::compareTo);
-            return true;
-        }
-        return false;
-    }
-
-    public int updateUser(Empleado u){
-        int result;
-        Empleado aux;
-        MysqlDB mysqlDB = new MysqlDB();
-        result = mysqlDB.updateUser(u);
-        if(result != 0){
-            aux = empleados.get(empleados.indexOf(u));
-            aux.setNombre(u.getNombre());
-            aux.setApellidos(u.getApellidos());
-            aux.setIdOficio(u.getIdOficio());
-            return 1;
         }else{
-            return 0;
+            return false;
         }
     }
 
-    public void deleteUser(Empleado u){
-        boolean result;
-        MysqlDB mysqlDB = new MysqlDB();
-        result = mysqlDB.deleteUser(u);
-        if (result){
-            empleados.remove(u);
+    public boolean deleteUser(int id){
+        Empleado e;
+        e = Connector.getConector().delete(Empleado.class, "usuarios/"+id);
+        if (e!=null){
+            empleados.remove(new Empleado(id, "", "", 0));
+            return true;
         }
+        return false;
     }
 
-    public void addUser(Empleado u){
-        empleados.add(u);
-        empleados.sort(Empleado::compareTo);
+    public boolean createUser(Empleado empleado){
+        Empleado e = Connector.getConector().post(Empleado.class, empleado, "usuarios");
+        if (e!=null){
+            addUser(empleado);
+            return true;
+        }
+        return false;
     }
 }

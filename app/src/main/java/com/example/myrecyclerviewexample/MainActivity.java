@@ -63,18 +63,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 int position = viewHolder.getAdapterPosition();
                 Empleado u = Model.getInstance().getEmpleados().get(position);
                 executeCall(new CallInterface() {
-                    Empleado e = null;
+                    boolean result;
+                    //Empleado e = null;
                     @Override
                     public void doInBackground() {
-                        //Model.getInstance().deleteUser(u);
-                         e = connector.delete(Empleado.class, "usuarios/"+u.getIdEmpleado());
+                       result = Model.getInstance().deleteUser(u.getIdEmpleado());
                     }
 
                     @Override
                     public void doInUI() {
-                        if (e != null) {
+                        if (result) {
                             myRecyclerViewAdapter.notifyItemRemoved(position);
-                            Model.getInstance().getEmpleados().remove(u);
                             Snackbar.make(recyclerView, "Deleted " + u.getNombre(), Snackbar.LENGTH_LONG)
                                     .setAction("Undo", new View.OnClickListener() {
                                         @Override
@@ -82,13 +81,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                                             executeCall(new CallInterface() {
                                                 @Override
                                                 public void doInBackground() {
-                                                    e = connector.post(Empleado.class, u,"usuarios");
+                                                    result = Model.getInstance().createUser(u);
                                                 }
 
                                                 @Override
                                                 public void doInUI() {
-                                                    if (e!=null) {
-                                                        Model.getInstance().addUser(u);
+                                                    if (result) {
                                                         Toast.makeText(MainActivity.this, "Operación cancelada", Toast.LENGTH_SHORT).show();
                                                         myRecyclerViewAdapter.notifyItemInserted(position);
                                                     }
@@ -119,7 +117,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 result ->
                 {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        Model.getInstance().getEmpleados().sort(Empleado::compareTo);
                         myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados());
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }

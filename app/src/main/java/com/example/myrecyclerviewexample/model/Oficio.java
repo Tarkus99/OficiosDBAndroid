@@ -26,6 +26,15 @@ public class Oficio {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
     @Override
     public boolean equals (Object o){
         Oficio aux;

@@ -49,7 +49,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return new ViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
@@ -73,6 +72,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                 public void doInUI() {
                     String str = imagen.getImage();
                     miArray = str.getBytes(StandardCharsets.ISO_8859_1);
+                    oficioEmpleado.setImage(miArray);
                     Bitmap btmp = BitmapFactory.decodeByteArray(miArray, 0, miArray.length);
                     holder.image.setImageBitmap(btmp);
                 }

@@ -1,7 +1,11 @@
 package com.example.myrecyclerviewexample;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,12 +14,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.myrecyclerviewexample.API.Connector;
 import com.example.myrecyclerviewexample.base.BaseActivity;
 import com.example.myrecyclerviewexample.base.CallInterface;
+import com.example.myrecyclerviewexample.model.ImagenRecibida;
 import com.example.myrecyclerviewexample.model.Model;
 import com.example.myrecyclerviewexample.model.Oficio;
 import com.example.myrecyclerviewexample.model.Empleado;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.nio.charset.StandardCharsets;
 
 public class DetailedView extends BaseActivity {
 
@@ -59,43 +67,31 @@ public class DetailedView extends BaseActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
-                        imageView.setImageResource(R.mipmap.ic_1_foreground);
-                        break;
-                    case 1:
-                        imageView.setImageResource(R.mipmap.ic_2_foreground);
-                        break;
-                    case 2:
-                        imageView.setImageResource(R.mipmap.ic_3_foreground);
-                        break;
-                    case 3:
-                        imageView.setImageResource(R.mipmap.ic_4_foreground);
-                        break;
-                    case 4:
-                        imageView.setImageResource(R.mipmap.ic_5_foreground);
-                        break;
-                    case 5:
-                        imageView.setImageResource(R.mipmap.ic_6_foreground);
-                        break;
-                    case 6:
-                        imageView.setImageResource(R.mipmap.ic_7_foreground);
-                        break;
-                    case 7:
-                        imageView.setImageResource(R.mipmap.ic_8_foreground);
-                        break;
-                    case 8:
-                        imageView.setImageResource(R.mipmap.ic_9_foreground);
-                        break;
-                    case 9:
-                        imageView.setImageResource(R.mipmap.ic_10_foreground);
-                        break;
-                    case 10:
-                        imageView.setImageResource(R.mipmap.ic_11_foreground);
-                        break;
-                    case 11:
-                        imageView.setImageResource(R.mipmap.ic_12_foreground);
-                        break;
+                Oficio oficio = (Oficio)spinner.getSelectedItem();
+                if (oficio.getImage()!=null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(oficio.getImage(), 0, oficio.getImage().length);
+                    imageView.setImageBitmap(bitmap);
+                }else{
+                    executeCall(new CallInterface() {
+                        ImagenRecibida imagen;
+                        @Override
+                        public void doInBackground() {
+                            imagen =
+                                    Connector.getConector().get
+                                            (ImagenRecibida.class, "oficios/images/" + oficio.getIdOficio());
+                        }
+
+                        @Override
+                        public void doInUI() {
+                            if (imagen!=null){
+                                String str = imagen.getImage();
+                                byte[] miArray = str.getBytes(StandardCharsets.ISO_8859_1);
+                                oficio.setImage(miArray);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(miArray, 0, miArray.length);
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        }
+                    });
                 }
             }
             @Override
@@ -113,21 +109,25 @@ public class DetailedView extends BaseActivity {
             if (!nombre.getText().toString().matches("") && !apellidos.getText().toString().matches("")){
                 showProgress();
                 executeCall(new CallInterface() {
+                    Empleado e;
                     boolean result = false;
                     @Override
                     public void doInBackground() {
-                       result = Model.getInstance().insertUser(
-                               new Empleado(nombre.getText().toString(),
-                                apellidos.getText().toString(),
-                                spinner.getSelectedItemPosition()+1));
+                       e = Connector.getConector().post(Empleado.class,
+                               new Empleado(
+                                       nombre.getText().toString(),
+                                       apellidos.getText().toString(),
+                                       spinner.getSelectedItemPosition()+1
+                               ),"usuarios");
                     }
                     @Override
                     public void doInUI() {
                         hideProgress();
-                        if (!result){
+                        if (e==null){
                             Toast.makeText(DetailedView.this, "No se ha podido insertar el usuario.", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(DetailedView.this, "Usuario insertado correctamente.", Toast.LENGTH_SHORT).show();
+                            Model.getInstance().addUser(e);
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                             setResult(RESULT_OK,intent);
                             finish();
@@ -143,10 +143,10 @@ public class DetailedView extends BaseActivity {
             if (!nombre.getText().toString().matches("") && !apellidos.getText().toString().matches("")){
                 showProgress();
                 executeCall(new CallInterface() {
-                    int result = 0;
+                    boolean result;
                     @Override
                     public void doInBackground() {
-                        result = Model.getInstance().updateUser(
+                       result = Model.getInstance().updateUser(
                                 new Empleado(empleado.getIdEmpleado(),
                                         nombre.getText().toString(),
                                         apellidos.getText().toString(),
@@ -155,16 +155,10 @@ public class DetailedView extends BaseActivity {
                     @Override
                     public void doInUI() {
                         hideProgress();
-                        if (result==0){
+                        if (!result){
                             Toast.makeText(DetailedView.this, "No se ha podido actualizar el usuario.", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(DetailedView.this, "Usuario actualizado correctamente.", Toast.LENGTH_SHORT).show();
-
-                            empleado.setNombre(nombre.getText().toString());
-                            empleado.setApellidos(apellidos.getText().toString());
-                            empleado.setIdOficio(spinner.getSelectedItemPosition()+1);
-
-                            Toast.makeText(DetailedView.this, empleado.getApellidos(), Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             setResult(RESULT_OK, intent);
                             finish();

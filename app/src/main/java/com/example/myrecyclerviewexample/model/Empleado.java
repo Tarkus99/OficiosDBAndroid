@@ -14,6 +14,7 @@ public class Empleado implements Serializable, Comparable<Empleado> {
         this.apellidos = apellidos;
         this.idOficio = oficio;
     }
+
     public Empleado(String nombre, String apellidos, int oficio) {
         this.nombre = nombre;
         this.apellidos = apellidos;
