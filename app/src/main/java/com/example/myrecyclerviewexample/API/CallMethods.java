@@ -13,7 +13,7 @@ import retrofit2.Retrofit;
 
 public class CallMethods<T>  {
 
-    private Retrofit retrofit = new Retrofit.Builder().baseUrl(Parameters.API).build();
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(Parameters.PREFIJO+"10.13.0.4"+Parameters.SUFIJO).build();
     private APIService service = retrofit.create(APIService.class);
     private static CallMethods callMethods;
 

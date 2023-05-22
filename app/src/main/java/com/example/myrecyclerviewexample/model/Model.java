@@ -1,8 +1,15 @@
 package com.example.myrecyclerviewexample.model;
 
-import com.example.myrecyclerviewexample.API.Connector;
-import com.example.myrecyclerviewexample.base.BaseActivity;
+import android.content.Context;
 
+import com.example.myrecyclerviewexample.API.Connector;
+import com.example.myrecyclerviewexample.DetailedView;
+import com.example.myrecyclerviewexample.GestionarPreferencias;
+import com.example.myrecyclerviewexample.MainActivity;
+import com.example.myrecyclerviewexample.base.BaseActivity;
+import com.example.myrecyclerviewexample.base.Parameters;
+
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,24 +35,36 @@ public class Model {
         empleados.sort(Empleado::compareTo);
     }
 
-    public List<Empleado> getEmpleados(){
+    public List<Empleado> getEmpleados(Context context){
         if (empleados.isEmpty()){
-            empleados = Connector.getConector().getAsList(Empleado.class, "usuarios");
+            empleados = Connector.getConector().getAsList(Empleado.class,
+                    Parameters.PREFIJO +
+                            GestionarPreferencias.getInstance().getIpConnection(context)+
+                          Parameters.SUFIJO +
+                          "usuarios");
             empleados.sort(Empleado::compareTo);
         }
         return empleados;
     }
 
-    public List<Oficio> getOficios() {
+    public List<Oficio> getOficios(Context context) {
         if (oficios.isEmpty()) {
-            oficios = Connector.getConector().getAsList(Oficio.class, "oficios");
+            oficios = Connector.getConector().getAsList(Oficio.class,
+                    Parameters.PREFIJO +
+                            GestionarPreferencias.getInstance().getIpConnection(context)+
+                            Parameters.SUFIJO +
+                    "oficios");
         }
         return oficios;
     }
 
-    public boolean updateUser(Empleado u){
+    public boolean updateUser(Empleado u, Context context){
         Empleado e;
-        e = Connector.getConector().put(Empleado.class, u, "usuarios");
+        e = Connector.getConector().put(Empleado.class, u,
+                Parameters.PREFIJO +
+                        GestionarPreferencias.getInstance().getIpConnection(context)+
+                        Parameters.SUFIJO +
+                "usuarios");
         if(e!=null){
             e = empleados.get(empleados.indexOf(u));
             e.setNombre(u.getNombre());
@@ -58,9 +77,13 @@ public class Model {
         }
     }
 
-    public boolean deleteUser(int id){
+    public boolean deleteUser(int id, Context context){
         Empleado e;
-        e = Connector.getConector().delete(Empleado.class, "usuarios/"+id);
+        e = Connector.getConector().delete(Empleado.class,
+                Parameters.PREFIJO +
+                        GestionarPreferencias.getInstance().getIpConnection(context)+
+                        Parameters.SUFIJO +
+                "usuarios/"+id);
         if (e!=null){
             empleados.remove(new Empleado(id, "", "", 0));
             return true;
@@ -68,8 +91,12 @@ public class Model {
         return false;
     }
 
-    public boolean createUser(Empleado empleado){
-        Empleado e = Connector.getConector().post(Empleado.class, empleado, "usuarios");
+    public boolean createUser(Empleado empleado, Context context){
+        Empleado e = Connector.getConector().post(Empleado.class, empleado,
+                Parameters.PREFIJO +
+                        GestionarPreferencias.getInstance().getIpConnection(context)+
+                        Parameters.SUFIJO +
+                "usuarios");
         if (e!=null){
             addUser(empleado);
             return true;

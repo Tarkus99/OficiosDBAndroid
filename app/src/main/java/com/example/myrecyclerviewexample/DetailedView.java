@@ -1,5 +1,6 @@
 package com.example.myrecyclerviewexample;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ public class DetailedView extends BaseActivity {
     public static enum MODO{
         UPDATE, CREATE;
     }
+    public static Context context;
     private Empleado empleado;
     private Spinner spinner;
     private ImageView imageView;
@@ -42,6 +44,8 @@ public class DetailedView extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailed_view);
 
+        context = getApplicationContext();
+
         spinner = findViewById(R.id.spinner);
         create = findViewById(R.id.aceptar);
         update = findViewById(R.id.update);
@@ -50,7 +54,7 @@ public class DetailedView extends BaseActivity {
         apellidos = findViewById(R.id.txtApellidos);
         imageView = findViewById(R.id.imageView);
 
-        ArrayAdapter<Oficio> myAdapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_item, Model.getInstance().getOficios());
+        ArrayAdapter<Oficio> myAdapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_item, Model.getInstance().getOficios(getApplicationContext()));
         spinner.setAdapter(myAdapter);
 
         MODO m = (MODO)getIntent().getExtras().getSerializable("mode");
@@ -113,12 +117,12 @@ public class DetailedView extends BaseActivity {
                     boolean result = false;
                     @Override
                     public void doInBackground() {
-                       e = Connector.getConector().post(Empleado.class,
+                       result = Model.getInstance().createUser(
                                new Empleado(
                                        nombre.getText().toString(),
                                        apellidos.getText().toString(),
                                        spinner.getSelectedItemPosition()+1
-                               ),"usuarios");
+                               ),getApplicationContext());
                     }
                     @Override
                     public void doInUI() {
@@ -150,7 +154,7 @@ public class DetailedView extends BaseActivity {
                                 new Empleado(empleado.getIdEmpleado(),
                                         nombre.getText().toString(),
                                         apellidos.getText().toString(),
-                                        spinner.getSelectedItemPosition()+1));
+                                        spinner.getSelectedItemPosition()+1), getApplicationContext());
                     }
                     @Override
                     public void doInUI() {

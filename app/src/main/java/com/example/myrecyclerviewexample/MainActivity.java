@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,11 +35,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private RecyclerView recyclerView;
     private MyRecyclerViewAdapter myRecyclerViewAdapter;
     private FloatingActionButton addUser;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
 
         recyclerView = findViewById(R.id.recycler);
         addUser = findViewById(R.id.addUser);
@@ -61,13 +66,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                Empleado u = Model.getInstance().getEmpleados().get(position);
+                Empleado u = Model.getInstance().getEmpleados(getApplicationContext()).get(position);
                 executeCall(new CallInterface() {
                     boolean result;
                     //Empleado e = null;
                     @Override
                     public void doInBackground() {
-                       result = Model.getInstance().deleteUser(u.getIdEmpleado());
+                       result = Model.getInstance().deleteUser(u.getIdEmpleado(), getApplicationContext());
                     }
 
                     @Override
@@ -81,7 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                                             executeCall(new CallInterface() {
                                                 @Override
                                                 public void doInBackground() {
-                                                    result = Model.getInstance().createUser(u);
+                                                    result = Model.getInstance().createUser(u, getApplicationContext());
                                                 }
 
                                                 @Override
@@ -108,7 +113,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 result ->
                 {
                     if (result.getResultCode() == RESULT_OK) {
-                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados());
+                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados(getApplicationContext()));
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
@@ -117,7 +122,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 result ->
                 {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados());
+                        myRecyclerViewAdapter.setUsuarios(Model.getInstance().getEmpleados(getApplicationContext()));
                         myRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
@@ -135,8 +140,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mimenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@androidx.annotation.NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case (R.id.configuracion):
+                Intent intentPreferenciasActivity =
+                        new Intent(this, PreferenciasActivity.class);
+                startActivity(intentPreferenciasActivity);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
-        Empleado u = Model.getInstance().getEmpleados().get(recyclerView.getChildAdapterPosition(view));
+        Empleado u = Model.getInstance().getEmpleados(getApplicationContext()).get(recyclerView.getChildAdapterPosition(view));
 
         Intent intent = new Intent(getApplicationContext(), DetailedView.class);
         intent.putExtra("mode", DetailedView.MODO.UPDATE);
@@ -146,14 +170,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void doInBackground() {
-        Model.getInstance().getEmpleados();
-        Model.getInstance().getOficios();
+        Model.getInstance().getEmpleados(getApplicationContext());
+        Model.getInstance().getOficios(getApplicationContext());
     }
 
     @Override
     public void doInUI() {
         hideProgress();
-        List<Empleado> empleadoList = Model.getInstance().getEmpleados();
+        List<Empleado> empleadoList = Model.getInstance().getEmpleados(getApplicationContext());
         Log.d("caca", empleadoList.get(1).getNombre());
         myRecyclerViewAdapter.setUsuarios(empleadoList);
     }

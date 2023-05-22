@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myrecyclerviewexample.API.Connector;
 import com.example.myrecyclerviewexample.base.CallInterface;
+import com.example.myrecyclerviewexample.base.Parameters;
 import com.example.myrecyclerviewexample.model.ImagenRecibida;
 import com.example.myrecyclerviewexample.model.Model;
 import com.example.myrecyclerviewexample.model.Oficio;
@@ -52,7 +53,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        List<Oficio> listaOficios = Model.getInstance().getOficios();
+        List<Oficio> listaOficios = Model.getInstance().getOficios(MainActivity.context);
 
         Empleado u = listaEmpleados.get(position);
         holder.title.setText(u.getApellidos() + ", " + u.getNombre());
@@ -66,7 +67,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
                 @Override
                 public void doInBackground() {
-                    imagen = Connector.getConector().get(ImagenRecibida.class, "oficios/images/" + u.getIdOficio());
+                    imagen = Connector.getConector().get(ImagenRecibida.class,
+                            Parameters.PREFIJO +
+                                    GestionarPreferencias.getInstance().getIpConnection(MainActivity.context)+
+                                    Parameters.SUFIJO +
+                            "oficios/images/" + u.getIdOficio());
                 }
                 @Override
                 public void doInUI() {
